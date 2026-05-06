@@ -4,7 +4,7 @@ import PuzzleInput from "../components/PuzzleInput";
 import ScoreBoard from "../components/ScoreBoard";
 import HeatmapContainer from "../components/HeatmapContainer";
 import HintButton from "../components/HintButton";
-import { recordDailyActivity } from "../utils/activityStorage";
+import { getStreakData, recordDailyActivity } from "../utils/activityStorage";
 import {
   completeCurrentPuzzle,
   getGameState,
@@ -20,6 +20,9 @@ function Home({ currentUser, onLogout }) {
   const [showHint, setShowHint] = useState(false);
   const [refreshHeatmap, setRefreshHeatmap] = useState(false);
   const userEmail = currentUser?.email;
+  const streakData = userEmail
+    ? getStreakData(userEmail)
+    : { currentStreak: 0, longestStreak: 0 };
 
   useEffect(() => {
     if (userEmail) {
@@ -84,13 +87,26 @@ function Home({ currentUser, onLogout }) {
   return (
     <div className="game-container">
       <header className="game-topbar">
-        <div>
-          <h1>Daily Logic Puzzle</h1>
-          <p>Welcome, <strong>{currentUser?.username}</strong>. Solve today's puzzles and keep your streak alive.</p>
+        <div className="topbar-brand">
+          <span className="brand-mark small">F</span>
+          <div>
+            <h1>Fuzzle</h1>
+            <p>Daily Logic Puzzle</p>
+          </div>
         </div>
-        <button className="logout-button" type="button" onClick={onLogout}>
-          Logout
-        </button>
+
+        <div className="topbar-actions">
+          <div className="nav-streak" aria-label={`Current streak ${streakData.currentStreak} days`}>
+            <span>Streak</span>
+            <strong>{streakData.currentStreak}</strong>
+          </div>
+          <div className="user-chip">
+            <span>{currentUser?.username}</span>
+          </div>
+          <button className="logout-button" type="button" onClick={onLogout}>
+            Logout
+          </button>
+        </div>
       </header>
 
       <ScoreBoard

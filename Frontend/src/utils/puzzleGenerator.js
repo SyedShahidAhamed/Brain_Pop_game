@@ -1,7 +1,10 @@
 import dayjs from "dayjs";
-import { readUserData, saveUserData } from "./userStorage";
+import { getCurrentUser, readUserData, saveUserData } from "./userStorage";
 
 export const SCORE_PER_CORRECT_ANSWER = 10;
+export const DAILY_QUIZ_SIZE = 5;
+const DAILY_QUIZ_STORAGE_KEY = "dailyQuiz";
+const DEVICE_ID_KEY = "dailyQuizDeviceId";
 
 export const PUZZLE_BANK = [
   {
@@ -560,6 +563,144 @@ export function shufflePuzzles(puzzles = PUZZLE_BANK) {
   return shuffledPuzzles;
 }
 
+function getTodayDateString() {
+  return dayjs().format("YYYY-MM-DD");
+}
+
+function normalizeUserId(userId) {
+  return String(userId || "anonymous").trim().toLowerCase();
+}
+
+function getOrCreateDeviceId() {
+  if (typeof localStorage === "undefined") {
+    return "server-device";
+  }
+
+  const existingDeviceId = localStorage.getItem(DEVICE_ID_KEY);
+
+  if (existingDeviceId) {
+    return existingDeviceId;
+  }
+
+  const newDeviceId = `device-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  localStorage.setItem(DEVICE_ID_KEY, newDeviceId);
+  return newDeviceId;
+}
+
+function getDefaultUserId() {
+  const currentUser = getCurrentUser();
+  return currentUser?.email || currentUser?.username || getOrCreateDeviceId();
+}
+
+function getQuestionKey(puzzle) {
+  return puzzle?.id ?? puzzle?.question;
+}
+
+function getUniquePuzzles(puzzles) {
+  const seenQuestionKeys = new Set();
+  const uniquePuzzles = [];
+
+  for (const puzzle of puzzles) {
+    const questionKey = getQuestionKey(puzzle);
+
+    if (!questionKey || seenQuestionKeys.has(questionKey)) {
+      continue;
+    }
+
+    seenQuestionKeys.add(questionKey);
+    uniquePuzzles.push(puzzle);
+  }
+
+  return uniquePuzzles;
+}
+
+function hasValidDailyQuiz(quiz) {
+  if (!quiz || typeof quiz.date !== "string" || !Array.isArray(quiz.questions)) {
+    return false;
+  }
+
+  if (quiz.questions.length !== DAILY_QUIZ_SIZE) {
+    return false;
+  }
+
+  const uniqueQuestionKeys = new Set(quiz.questions.map(getQuestionKey));
+  return uniqueQuestionKeys.size === DAILY_QUIZ_SIZE;
+}
+
+export function generateSeed(date, userId) {
+  const seedInput = `${date}:${normalizeUserId(userId)}`;
+  let hash = 2166136261;
+
+  // FNV-1a hash gives a fast, stable 32-bit seed for date + user variation.
+  for (let index = 0; index < seedInput.length; index += 1) {
+    hash ^= seedInput.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return hash >>> 0;
+}
+
+export function seededRandom(seed) {
+  let state = seed >>> 0;
+
+  return function random() {
+    state += 0x6d2b79f5;
+    let result = state;
+    result = Math.imul(result ^ (result >>> 15), result | 1);
+    result ^= result + Math.imul(result ^ (result >>> 7), result | 61);
+    return ((result ^ (result >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+export function shuffleWithSeed(array, seed) {
+  const shuffledArray = array.map(clonePuzzle);
+  const random = seededRandom(seed);
+
+  for (let index = shuffledArray.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(random() * (index + 1));
+    [shuffledArray[index], shuffledArray[swapIndex]] = [
+      shuffledArray[swapIndex],
+      shuffledArray[index]
+    ];
+  }
+
+  return shuffledArray;
+}
+
+export function getDailyQuiz(
+  puzzles = PUZZLE_BANK,
+  userId = getDefaultUserId(),
+  date = getTodayDateString()
+) {
+  const uniquePuzzles = getUniquePuzzles(puzzles);
+
+  if (uniquePuzzles.length < DAILY_QUIZ_SIZE) {
+    throw new Error(`Daily quiz requires at least ${DAILY_QUIZ_SIZE} unique questions.`);
+  }
+
+  const storedQuiz = readUserData(DAILY_QUIZ_STORAGE_KEY, null, userId);
+
+  if (storedQuiz?.date === date && hasValidDailyQuiz(storedQuiz)) {
+    return {
+      date: storedQuiz.date,
+      questions: storedQuiz.questions.map(clonePuzzle)
+    };
+  }
+
+  const seed = generateSeed(date, userId);
+  const questions = shuffleWithSeed(uniquePuzzles, seed).slice(0, DAILY_QUIZ_SIZE);
+  const dailyQuiz = {
+    date,
+    questions
+  };
+
+  saveUserData(DAILY_QUIZ_STORAGE_KEY, dailyQuiz, userId);
+  return {
+    date: dailyQuiz.date,
+    questions: dailyQuiz.questions.map(clonePuzzle)
+  };
+}
+
 export function calculateScore(isCorrect, currentScore = 0) {
   return isCorrect ? currentScore + SCORE_PER_CORRECT_ANSWER : currentScore;
 }
@@ -622,9 +763,7 @@ function selectPuzzlesForDate(date, avoidIds = []) {
 }
 
 export function generateDailyPuzzles(email, date = dayjs().format("YYYY-MM-DD")) {
-  const yesterday = dayjs(date).subtract(1, "day").format("YYYY-MM-DD");
-  const yesterdayIds = selectPuzzlesForDate(yesterday).map((puzzle) => puzzle.id);
-  const puzzles = selectPuzzlesForDate(date, yesterdayIds);
+  const { questions: puzzles } = getDailyQuiz(PUZZLE_BANK, email, date);
 
   saveQuestionHistory(email, date, puzzles.map((puzzle) => puzzle.id));
   return puzzles;

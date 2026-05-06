@@ -10,21 +10,23 @@ function HeatmapGrid({ days, activity }) {
   }
 
   return (
-    <div className="heatmap-grid">
-      {days.map((date) => {
-        const record = activity[date];
-        const level = getActivityLevel(record);
+    <div className="heatmap-shell">
+      <div className="heatmap-grid">
+        {days.map((date) => {
+          const record = activity[date];
+          const level = getActivityLevel(record);
 
-        return (
-          <HeatmapCell
-            key={date}
-            level={level}
-            date={date}
-            solvedQuestions={record?.solvedQuestions || 0}
-            completionPercentage={record?.completionPercentage || 0}
-          />
-        );
-      })}
+          return (
+            <HeatmapCell
+              key={date}
+              level={level}
+              date={date}
+              solvedQuestions={record?.solvedQuestions || 0}
+              completionPercentage={record?.completionPercentage || 0}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

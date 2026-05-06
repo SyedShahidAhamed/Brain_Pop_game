@@ -61,9 +61,21 @@ function Signup({ onSignup, onNavigate, showToast }) {
 
   return (
     <main className="auth-page">
-      <section className="auth-panel">
-        <div className="auth-brand">
-          <span className="brand-mark">F</span>
+      <section className="auth-shell">
+        <aside className="auth-visual" aria-hidden="true">
+          <span className="brand-mark hero">F</span>
+          <h2>Start your Fuzzle run</h2>
+          <p>Create a local demo profile, preserve your progress, and turn daily logic into a habit.</p>
+          <div className="auth-metrics">
+            <span>Personal quiz</span>
+            <span>Progress stats</span>
+            <span>Daily streaks</span>
+          </div>
+        </aside>
+
+        <div className="auth-panel">
+          <div className="auth-brand">
+            <span className="brand-mark">F</span>
           <div>
             <h1>Create your Fuzzle account</h1>
             <p>Save your demo profile and jump into today's puzzles.</p>
@@ -118,6 +130,7 @@ function Signup({ onSignup, onNavigate, showToast }) {
             Login
           </button>
         </p>
+        </div>
       </section>
     </main>
   );

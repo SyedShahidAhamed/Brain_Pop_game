@@ -55,9 +55,21 @@ function Login({ onLogin, onNavigate, showToast }) {
 
   return (
     <main className="auth-page">
-      <section className="auth-panel">
-        <div className="auth-brand">
-          <span className="brand-mark">F</span>
+      <section className="auth-shell">
+        <aside className="auth-visual" aria-hidden="true">
+          <span className="brand-mark hero">F</span>
+          <h2>Fuzzle</h2>
+          <p>Build your streak, solve the daily set, and watch your activity grid light up.</p>
+          <div className="auth-metrics">
+            <span>5 daily puzzles</span>
+            <span>Live streaks</span>
+            <span>Activity heatmap</span>
+          </div>
+        </aside>
+
+        <div className="auth-panel">
+          <div className="auth-brand">
+            <span className="brand-mark">F</span>
           <div>
             <h1>Welcome to Fuzzle</h1>
             <p>Log in to continue your daily puzzle streak.</p>
@@ -100,6 +112,7 @@ function Login({ onLogin, onNavigate, showToast }) {
             Create account
           </button>
         </p>
+        </div>
       </section>
     </main>
   );
