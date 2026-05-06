@@ -494,7 +494,167 @@ export const PUZZLE_BANK = [
     difficulty: "hard",
     difficultyLabel: "Hard",
     hint: "Pattern: ×3, +1, ×3, +1..."
-  }
+  },
+  {
+  id: "h-34",
+  question: "What is the next number: 4, 9, 19, 39, 79, ?",
+  answer: 159,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern: ×2 +1"
+},
+{
+  id: "h-35",
+  question: "Find the next number: 3, 8, 18, 38, 78, ?",
+  answer: 158,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern: ×2 +2"
+},
+{
+  id: "h-36",
+  question: "What is the next number: 1, 2, 6, 24, 120, ?",
+  answer: 720,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Factorial pattern"
+},
+{
+  id: "h-37",
+  question: "Find the missing number: 5, 11, 23, 47, ?, 191",
+  answer: 95,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern: ×2 +1"
+},
+{
+  id: "h-38",
+  question: "What comes next: 10, 13, 18, 25, 34, ?",
+  answer: 45,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Add consecutive odd numbers"
+},
+{
+  id: "h-39",
+  question: "Find the next number: 81, 27, 9, 3, 1, ?",
+  answer: 0.333,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Divide by 3"
+},
+{
+  id: "h-40",
+  question: "What is the next number: 7, 14, 28, 56, 112, ?",
+  answer: 224,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Multiply by 2"
+},
+{
+  id: "h-41",
+  question: "Find the missing number: 2, 5, 11, 23, 47, ?",
+  answer: 95,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern: ×2 +1"
+},
+{
+  id: "h-42",
+  question: "What comes next: 1, 4, 13, 40, 121, ?",
+  answer: 364,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern: ×3 +1"
+},
+{
+  id: "h-43",
+  question: "Find the next number: 100, 95, 85, 70, 50, ?",
+  answer: 25,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Subtract multiples of 5"
+},
+{
+  id: "h-44",
+  question: "What is the next number: 6, 11, 21, 41, 81, ?",
+  answer: 161,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern: ×2 -1"
+},
+{
+  id: "h-45",
+  question: "Find the next number: 2, 12, 36, 80, 150, ?",
+  answer: 252,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern: n³ + n"
+},
+{
+  id: "h-46",
+  question: "What comes next: 9, 18, 36, 72, 144, ?",
+  answer: 288,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Multiply by 2"
+},
+{
+  id: "h-47",
+  question: "Find the missing number: 8, 24, 72, 216, ?, 1944",
+  answer: 648,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Multiply by 3"
+},
+{
+  id: "h-48",
+  question: "What is the next number: 15, 31, 63, 127, ?",
+  answer: 255,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern: ×2 +1"
+},
+{
+  id: "h-49",
+  question: "Find the next number: 1, 5, 14, 30, 55, ?",
+  answer: 91,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern based on increasing square additions"
+},
+{
+  id: "h-50",
+  question: "What comes next: 2, 3, 5, 9, 17, 33, ?",
+  answer: 65,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern: ×2 -1"
+},
+{
+  id: "h-51",
+  question: "Find the next number: 121, 111, 101, 91, ?",
+  answer: 81,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Subtract 10"
+},
+{
+  id: "h-52",
+  question: "What is the next number: 14, 28, 56, 112, 224, ?",
+  answer: 448,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Multiply by 2"
+},
+{
+  id: "h-53",
+  question: "Find the next number: 3, 7, 15, 31, 63, ?",
+  answer: 127,
+  difficulty: "hard",
+  difficultyLabel: "Hard",
+  hint: "Pattern: ×2 +1"
+}
 ];
 
 const lastPuzzleByDifficulty = new Map();

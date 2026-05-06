@@ -26,6 +26,16 @@ function calculateProgress(state) {
   };
 }
 
+function formatDurationFromMs(durationMs = 0) {
+  if (!durationMs) return "";
+
+  const totalSeconds = Math.max(1, Math.round(durationMs / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${minutes}m ${seconds.toString().padStart(2, "0")}s`;
+}
+
 function createNewDailyState(email, today) {
   const puzzles = generateDailyPuzzles(email, today);
   const newState = {
@@ -34,6 +44,12 @@ function createNewDailyState(email, today) {
     currentPuzzleIndex: 0,
     score: 0,
     hintUsed: false,
+    startedAt: Date.now(),
+    lastPlayedAt: null,
+    completedAt: null,
+    completionDurationMs: 0,
+    completionTime: "",
+    completed: false,
     completedPuzzles: [],
     skippedPuzzles: []
   };
@@ -49,14 +65,26 @@ function normalizeState(state) {
   const skippedPuzzles = Array.isArray(state.skippedPuzzles)
     ? [...new Set(state.skippedPuzzles)]
     : [];
+  const totalPuzzles = state.puzzles.length;
+  const completed = completedPuzzles.length >= totalPuzzles;
+  const startedAt = state.startedAt || Date.now();
+  const completedAt = state.completedAt || (completed ? state.lastPlayedAt : null);
+  const completionDurationMs = state.completionDurationMs
+    || (completedAt ? Math.max(1000, completedAt - startedAt) : 0);
 
   return {
     ...state,
     completedPuzzles,
     skippedPuzzles,
-    currentPuzzleIndex: Math.min(state.currentPuzzleIndex || 0, state.puzzles.length),
+    currentPuzzleIndex: Math.min(state.currentPuzzleIndex || 0, totalPuzzles),
     score: completedPuzzles.length * 10,
-    hintUsed: Boolean(state.hintUsed)
+    hintUsed: Boolean(state.hintUsed),
+    startedAt,
+    lastPlayedAt: state.lastPlayedAt || null,
+    completedAt,
+    completionDurationMs,
+    completionTime: state.completionTime || formatDurationFromMs(completionDurationMs),
+    completed
   };
 }
 
@@ -78,10 +106,20 @@ export function completeCurrentPuzzle(email) {
   const state = getDailyState(email);
   const currentIndex = state.currentPuzzleIndex;
   const completedPuzzles = [...new Set([...state.completedPuzzles, currentIndex])];
+  const completed = completedPuzzles.length >= state.puzzles.length;
+  const completedAt = completed ? (state.completedAt || Date.now()) : null;
+  const completionDurationMs = completed
+    ? (state.completionDurationMs || Math.max(1000, completedAt - state.startedAt))
+    : 0;
   const newState = {
     ...state,
     completedPuzzles,
     score: completedPuzzles.length * 10,
+    lastPlayedAt: Date.now(),
+    completed,
+    completedAt,
+    completionDurationMs,
+    completionTime: formatDurationFromMs(completionDurationMs),
     currentPuzzleIndex: Math.min(currentIndex + 1, state.puzzles.length)
   };
 
@@ -95,6 +133,7 @@ export function skipCurrentPuzzle(email) {
   const newState = {
     ...state,
     skippedPuzzles: [...new Set([...state.skippedPuzzles, currentIndex])],
+    lastPlayedAt: Date.now(),
     currentPuzzleIndex: Math.min(currentIndex + 1, state.puzzles.length)
   };
 
@@ -126,6 +165,15 @@ export function getGameState(email) {
     currentPuzzle: isComplete ? null : state.puzzles[currentIndex],
     currentIndex,
     score: state.score,
+    startedAt: state.startedAt,
+    lastPlayedAt: state.lastPlayedAt,
+    completedAt: state.completedAt,
+    completed: state.completed,
+    completionDurationMs: state.completionDurationMs,
+    completionTime: state.completionTime,
+    timeTakenSeconds: state.startedAt && state.lastPlayedAt
+      ? Math.max(1, Math.round((state.lastPlayedAt - state.startedAt) / 1000))
+      : 0,
     solved: progress.solvedQuestions,
     hintUsed: state.hintUsed,
     completedPuzzles: state.completedPuzzles,

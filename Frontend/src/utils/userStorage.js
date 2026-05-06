@@ -23,10 +23,7 @@ export function getUserKey(key, email) {
     return null;
   }
 
-  const storageKey = `${key}_${userEmail.trim().toLowerCase()}`;
-  console.log("Current User:", userEmail);
-  console.log("Loading Key:", storageKey);
-  return storageKey;
+  return `${key}_${userEmail.trim().toLowerCase()}`;
 }
 
 export function readUserData(key, fallback, email) {
@@ -57,6 +54,16 @@ export function initializeUserGameData(email) {
     streak: DEFAULT_STREAK_DATA,
     heatmap: {},
     settings: {},
+    notificationSettings: {
+      enabled: false,
+      muted: false,
+      permission: "default",
+      token: "",
+      tokenUpdatedAt: null,
+      reminderFrequencyMinutes: 60,
+      lastReminderAt: null,
+      lastError: ""
+    },
     statistics: {
       totalSolved: 0,
       highScore: 0

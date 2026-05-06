@@ -5,6 +5,8 @@ import ScoreBoard from "../components/ScoreBoard";
 import HeatmapContainer from "../components/HeatmapContainer";
 import HintButton from "../components/HintButton";
 import Logo from "../components/Logo";
+import NotificationButton from "../components/NotificationButton";
+import ShareAchievementButton from "../components/ShareAchievementButton";
 import { getStreakData, recordDailyActivity } from "../utils/activityStorage";
 import {
   completeCurrentPuzzle,
@@ -12,10 +14,11 @@ import {
   markHintUsed,
   skipCurrentPuzzle
 } from "../utils/dailyState";
+import { getLeaderboardRowForEmail } from "../utils/leaderboardStorage";
 
 const PUZZLE_TIME_LIMIT = 60;
 
-function Home({ currentUser, onLogout }) {
+function Home({ currentUser, onLogout, onNavigate, showToast }) {
   const [gameState, setGameState] = useState(null);
   const [timeLeft, setTimeLeft] = useState(PUZZLE_TIME_LIMIT);
   const [showHint, setShowHint] = useState(false);
@@ -24,12 +27,40 @@ function Home({ currentUser, onLogout }) {
   const streakData = userEmail
     ? getStreakData(userEmail)
     : { currentStreak: 0, longestStreak: 0 };
+  const leaderboardAchievement = getLeaderboardRowForEmail(userEmail);
+  const shareAchievement = leaderboardAchievement || {
+    username: currentUser?.username,
+    email: userEmail,
+    score: gameState?.score || 0,
+    solvedQuestions: gameState?.solvedQuestions || 0,
+    totalQuestions: gameState?.totalQuestions || 5,
+    completionPercentage: gameState?.completionPercentage || 0,
+    completionTime: gameState?.completionTime || "Not Finished",
+    currentStreak: streakData.currentStreak || 0,
+    longestStreak: streakData.longestStreak || 0
+  };
 
   useEffect(() => {
     if (userEmail) {
       setGameState(getGameState(userEmail));
     }
   }, [userEmail]);
+
+  useEffect(() => {
+    if (!userEmail || !gameState?.completed) return;
+
+    recordDailyActivity(userEmail, {
+      score: gameState.score,
+      solvedQuestions: gameState.solvedQuestions,
+      totalQuestions: gameState.totalQuestions,
+      completionPercentage: gameState.completionPercentage,
+      timeTakenSeconds: gameState.timeTakenSeconds,
+      completed: gameState.completed,
+      completedAt: gameState.completedAt,
+      completionDurationMs: gameState.completionDurationMs,
+      completionTime: gameState.completionTime
+    });
+  }, [gameState, userEmail]);
 
   const handleTimeout = useCallback(() => {
     const nextState = skipCurrentPuzzle(userEmail);
@@ -65,7 +96,12 @@ function Home({ currentUser, onLogout }) {
       score: nextState.score,
       solvedQuestions: nextState.solvedQuestions,
       totalQuestions: nextState.totalQuestions,
-      completionPercentage: nextState.completionPercentage
+      completionPercentage: nextState.completionPercentage,
+      timeTakenSeconds: nextState.timeTakenSeconds,
+      completed: nextState.completed,
+      completedAt: nextState.completedAt,
+      completionDurationMs: nextState.completionDurationMs,
+      completionTime: nextState.completionTime
     });
 
     setGameState(nextState);
@@ -102,6 +138,26 @@ function Home({ currentUser, onLogout }) {
           <div className="user-chip">
             <span>{currentUser?.username}</span>
           </div>
+          <NotificationButton
+            userEmail={userEmail}
+            compact
+            onToast={showToast}
+          />
+          <button
+            className="leaderboard-button"
+            type="button"
+            onClick={() => onNavigate("/profile")}
+          >
+            Profile
+          </button>
+          <button
+            className="leaderboard-button"
+            type="button"
+            onClick={() => onNavigate("/leaderboard")}
+          >
+            <span aria-hidden="true">🏆</span>
+            Leaderboard
+          </button>
           <button className="logout-button" type="button" onClick={onLogout}>
             Logout
           </button>
@@ -119,9 +175,26 @@ function Home({ currentUser, onLogout }) {
 
       {gameState.isComplete ? (
         <div className="completion-message">
-          <h2>Congratulations!</h2>
-          <p>You've completed all 5 puzzles for today!</p>
+          <h2>{gameState.completed ? "Congratulations!" : "Daily run finished"}</h2>
+          <p>
+            {gameState.completed
+              ? "You've completed all 5 puzzles for today!"
+              : "Today's puzzle queue is finished. Complete every puzzle to lock a leaderboard time."}
+          </p>
+          {gameState.completed && (
+            <div className="completion-time-badge">
+              <span>Timer Complete</span>
+              <strong>Finished in {gameState.completionTime}</strong>
+            </div>
+          )}
           <p>Final Score: {gameState.score} | Puzzles Solved: {gameState.solvedQuestions}</p>
+          <div className="completion-share-actions">
+            <ShareAchievementButton
+              achievement={shareAchievement}
+              label="Share Achievement"
+              onToast={showToast}
+            />
+          </div>
         </div>
       ) : (
         <>

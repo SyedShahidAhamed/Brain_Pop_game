@@ -34,7 +34,12 @@ export function recordDailyActivity(email, {
   score,
   solvedQuestions,
   totalQuestions,
-  completionPercentage
+  completionPercentage,
+  timeTakenSeconds = 0,
+  completed = false,
+  completedAt = null,
+  completionDurationMs = 0,
+  completionTime = ""
 }) {
   const today = dayjs().format("YYYY-MM-DD");
   const activityMap = getActivityMap(email);
@@ -44,6 +49,10 @@ export function recordDailyActivity(email, {
     previousRecord.completionPercentage || 0,
     completionPercentage
   );
+  const isCompleted = Boolean(previousRecord.completed || completed);
+  const nextCompletionDurationMs = isCompleted
+    ? (previousRecord.completionDurationMs || completionDurationMs || timeTakenSeconds * 1000)
+    : 0;
 
   activityMap[today] = {
     date: today,
@@ -51,7 +60,12 @@ export function recordDailyActivity(email, {
     score: Math.max(previousRecord.score || 0, score),
     solvedQuestions: nextSolvedQuestions,
     totalQuestions,
-    completionPercentage: nextCompletionPercentage
+    completionPercentage: nextCompletionPercentage,
+    timeTakenSeconds: timeTakenSeconds || previousRecord.timeTakenSeconds || 0,
+    completed: isCompleted,
+    completedAt: previousRecord.completedAt || completedAt,
+    completionDurationMs: nextCompletionDurationMs,
+    completionTime: previousRecord.completionTime || completionTime
   };
 
   saveUserData("activity", activityMap, email);

@@ -1,4 +1,5 @@
 import { CURRENT_USER_KEY, initializeUserGameData } from "./userStorage";
+import dayjs from "dayjs";
 
 const USERS_KEY = "users";
 
@@ -29,6 +30,14 @@ function saveCurrentUser(user) {
   const sessionUser = publicUser(user);
   localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(sessionUser));
   initializeUserGameData(sessionUser.email);
+
+  const today = dayjs().format("YYYY-MM-DD");
+  saveUsers(readUsers().map((storedUser) => (
+    storedUser.email === sessionUser.email
+      ? { ...storedUser, lastLoginDate: today }
+      : storedUser
+  )));
+
   return sessionUser;
 }
 

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { validateAnswer } from "../utils/puzzleGenerator";
 
 function PuzzleInput({ answer, onSolved, disabled, timeUp }) {
   const [input, setInput] = useState("");
@@ -27,7 +28,7 @@ function PuzzleInput({ answer, onSolved, disabled, timeUp }) {
 
     if (disabled || timeUp) return;
 
-    if (Number(input) === answer) {
+    if (validateAnswer(input, answer)) {
       onSolved();
       setInput("");
       setFeedback("");
@@ -42,6 +43,7 @@ function PuzzleInput({ answer, onSolved, disabled, timeUp }) {
         <input
           ref={inputRef}
           type="number"
+          step="any"
           placeholder="Enter answer"
           value={input}
           disabled={disabled || timeUp}

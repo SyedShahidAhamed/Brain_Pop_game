@@ -1,5 +1,5 @@
-import { useState } from "react";
-import Logo, { APP_NAME } from "../components/Logo";
+import { useEffect, useRef, useState } from "react";
+import Logo from "../components/Logo";
 import { signupUser } from "../utils/authStorage";
 
 const initialForm = {
@@ -12,6 +12,13 @@ function Signup({ onSignup, onNavigate, showToast }) {
   const [formData, setFormData] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const submitTimerRef = useRef(null);
+
+  useEffect(() => () => {
+    if (submitTimerRef.current) {
+      window.clearTimeout(submitTimerRef.current);
+    }
+  }, []);
 
   function updateField(event) {
     const { name, value } = event.target;
@@ -47,9 +54,10 @@ function Signup({ onSignup, onNavigate, showToast }) {
     setIsLoading(true);
 
     // Small delay makes the demo loading state visible.
-    setTimeout(() => {
+    submitTimerRef.current = window.setTimeout(() => {
       const result = signupUser(formData);
       setIsLoading(false);
+      submitTimerRef.current = null;
 
       if (!result.success) {
         showToast(result.message, "error");

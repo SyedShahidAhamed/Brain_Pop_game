@@ -1,0 +1,25 @@
+{
+  "name": "BrainByte",
+  "short_name": "BrainByte",
+  "description": "Daily logic puzzles, streaks, leaderboard achievements, and recurring reminders.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#070b14",
+  "theme_color": "#00f5ff",
+  "icons": [
+    {
+      "src": "/brainbyte-logo-removebg-preview.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/brainbyte-logo-removebg-preview.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
