@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Logo, { APP_NAME } from "../components/Logo";
 import { loginUser } from "../utils/authStorage";
 
 const initialForm = {
@@ -57,9 +58,14 @@ function Login({ onLogin, onNavigate, showToast }) {
     <main className="auth-page">
       <section className="auth-shell">
         <aside className="auth-visual" aria-hidden="true">
-          <span className="brand-mark hero">F</span>
-          <h2>Fuzzle</h2>
-          <p>Build your streak, solve the daily set, and watch your activity grid light up.</p>
+          <div className="auth-visual-content">
+            <Logo size="hero" className="auth-visual-logo" />
+            <div className="auth-title-group">
+              <h2>$RAIN$YTE</h2>
+              <span className="auth-kicker">PUZZLE GAME</span>
+            </div>
+            <p>PUZZLE GAME. Build your streak, solve the daily set, and watch your activity grid light up.</p>
+          </div>
           <div className="auth-metrics">
             <span>5 daily puzzles</span>
             <span>Live streaks</span>
@@ -68,50 +74,43 @@ function Login({ onLogin, onNavigate, showToast }) {
         </aside>
 
         <div className="auth-panel">
-          <div className="auth-brand">
-            <span className="brand-mark">F</span>
-          <div>
-            <h1>Welcome to Fuzzle</h1>
-            <p>Log in to continue your daily puzzle streak.</p>
-          </div>
-        </div>
+          <Logo size="default" showText subtitle="Log in to continue your daily puzzle streak." className="auth-brand" />
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <label>
-            Email
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={updateField}
-              placeholder="you@example.com"
-            />
-            {errors.email && <small>{errors.email}</small>}
-          </label>
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <label>
+              Email
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={updateField}
+                placeholder="you@example.com"
+              />
+              {errors.email && <small>{errors.email}</small>}
+            </label>
 
-          <label>
-            Password
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={updateField}
-              placeholder="Enter your password"
-            />
-            {errors.password && <small>{errors.password}</small>}
-          </label>
+            <label>
+              Password
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={updateField}
+                placeholder="Enter your password"
+              />
+              {errors.password && <small>{errors.password}</small>}
+            </label>
 
-          <button className="auth-submit" type="submit" disabled={isLoading}>
-            {isLoading ? <span className="button-loader"></span> : "Login"}
-          </button>
-        </form>
+            <div className="auth-actions">
+              <button className="auth-submit" type="submit" disabled={isLoading}>
+                {isLoading ? <span className="button-loader"></span> : "Login"}
+              </button>
 
-        <p className="auth-switch">
-          New here?
-          <button type="button" onClick={() => onNavigate("/signup")}>
-            Create account
-          </button>
-        </p>
+              <button className="auth-secondary" type="button" onClick={() => onNavigate("/signup")}>
+                Create account
+              </button>
+            </div>
+          </form>
         </div>
       </section>
     </main>

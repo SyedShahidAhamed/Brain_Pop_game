@@ -1,4 +1,4 @@
-# 🧩 Daily Puzzle Logic Game
+# BrainByte
 
 A client-first **offline puzzle game** with a GitHub-style activity heatmap, built as a capstone project for the **Bluestock Internship**.
 

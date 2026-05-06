@@ -4,6 +4,7 @@ import PuzzleInput from "../components/PuzzleInput";
 import ScoreBoard from "../components/ScoreBoard";
 import HeatmapContainer from "../components/HeatmapContainer";
 import HintButton from "../components/HintButton";
+import Logo from "../components/Logo";
 import { getStreakData, recordDailyActivity } from "../utils/activityStorage";
 import {
   completeCurrentPuzzle,
@@ -81,19 +82,17 @@ function Home({ currentUser, onLogout }) {
   }, [gameState, userEmail]);
 
   if (!gameState) {
-    return <div className="loading">Loading today's puzzles...</div>;
+    return (
+      <div className="loading brand-loading">
+        <Logo size="hero" showText subtitle="Loading your daily challenge..." />
+      </div>
+    );
   }
 
   return (
     <div className="game-container">
       <header className="game-topbar">
-        <div className="topbar-brand">
-          <span className="brand-mark small">F</span>
-          <div>
-            <h1>Fuzzle</h1>
-            <p>Daily Logic Puzzle</p>
-          </div>
-        </div>
+        <Logo size="nav" showText subtitle="Daily Logic Puzzle" className="topbar-brand" />
 
         <div className="topbar-actions">
           <div className="nav-streak" aria-label={`Current streak ${streakData.currentStreak} days`}>

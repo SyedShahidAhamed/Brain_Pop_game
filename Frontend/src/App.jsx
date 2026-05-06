@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Toast from "./components/Toast";
+import { APP_NAME } from "./components/Logo";
 import { getCurrentUser, logoutUser } from "./utils/authStorage";
 
 const LOGIN_ROUTE = "/login";
@@ -14,6 +15,10 @@ function App() {
   const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [toast, setToast] = useState({ message: "", type: "success" });
+
+  useEffect(() => {
+    document.title = APP_NAME;
+  }, []);
 
   useEffect(() => {
     function handlePopState() {

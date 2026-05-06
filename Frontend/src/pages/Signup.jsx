@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Logo, { APP_NAME } from "../components/Logo";
 import { signupUser } from "../utils/authStorage";
 
 const initialForm = {
@@ -63,73 +64,71 @@ function Signup({ onSignup, onNavigate, showToast }) {
     <main className="auth-page">
       <section className="auth-shell">
         <aside className="auth-visual" aria-hidden="true">
-          <span className="brand-mark hero">F</span>
-          <h2>Start your Fuzzle run</h2>
-          <p>Create a local demo profile, preserve your progress, and turn daily logic into a habit.</p>
+          <div className="auth-visual-content">
+            <Logo size="hero" className="auth-visual-logo" />
+            <div className="auth-title-group">
+              <h2>$RAIN$YTE</h2>
+              <span className="auth-kicker">PUZZLE GAME</span>
+            </div>
+            <p>PUZZLE GAME. Build your streak, solve the daily set, and watch your activity grid light up.</p>
+          </div>
           <div className="auth-metrics">
-            <span>Personal quiz</span>
-            <span>Progress stats</span>
-            <span>Daily streaks</span>
+            <span>5 daily puzzles</span>
+            <span>Live streaks</span>
+            <span>Activity heatmap</span>
           </div>
         </aside>
 
         <div className="auth-panel">
-          <div className="auth-brand">
-            <span className="brand-mark">F</span>
-          <div>
-            <h1>Create your Fuzzle account</h1>
-            <p>Save your demo profile and jump into today's puzzles.</p>
-          </div>
-        </div>
+          <Logo size="default" showText subtitle="Create an account to start your daily puzzle streak." className="auth-brand" />
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <label>
-            Username
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={updateField}
-              placeholder="PuzzleMaster"
-            />
-            {errors.username && <small>{errors.username}</small>}
-          </label>
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <label>
+              Username
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={updateField}
+                placeholder="BrainBytePlayer"
+              />
+              {errors.username && <small>{errors.username}</small>}
+            </label>
 
-          <label>
-            Email
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={updateField}
-              placeholder="you@example.com"
-            />
-            {errors.email && <small>{errors.email}</small>}
-          </label>
+            <label>
+              Email
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={updateField}
+                placeholder="you@example.com"
+              />
+              {errors.email && <small>{errors.email}</small>}
+            </label>
 
-          <label>
-            Password
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={updateField}
-              placeholder="At least 6 characters"
-            />
-            {errors.password && <small>{errors.password}</small>}
-          </label>
+            <label>
+              Password
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={updateField}
+                placeholder="At least 6 characters"
+              />
+              {errors.password && <small>{errors.password}</small>}
+            </label>
 
-          <button className="auth-submit" type="submit" disabled={isLoading}>
-            {isLoading ? <span className="button-loader"></span> : "Signup"}
-          </button>
-        </form>
+            <div className="auth-actions">
+              <button className="auth-submit" type="submit" disabled={isLoading}>
+                {isLoading ? <span className="button-loader"></span> : "Create account"}
+              </button>
 
-        <p className="auth-switch">
-          Already registered?
-          <button type="button" onClick={() => onNavigate("/login")}>
-            Login
-          </button>
-        </p>
+              <button className="auth-secondary" type="button" onClick={() => onNavigate("/login")}>
+                Login
+              </button>
+            </div>
+          </form>
         </div>
       </section>
     </main>

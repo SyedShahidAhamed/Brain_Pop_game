@@ -1,4 +1,4 @@
-# 🧩 Daily Puzzle Logic Game
+# BrainByte
 
 ![React](https://img.shields.io/badge/React-18-blue)
 ![Vite](https://img.shields.io/badge/Vite-Build-purple)
@@ -19,7 +19,7 @@ Built as a **Capstone Project for the Bluestock Internship**, the application em
 
 # 🌐 Live Demo
 
-[https://daily-puzzle-game-alpha-rose.vercel.app/](https://daily-puzzle-game-alpha-rose.vercel.app/)
+BrainByte deployment URL goes here after publishing.
 
 ---
 
@@ -179,7 +179,7 @@ git clone <repo-url>
 Navigate to the project folder
 
 ```bash
-cd daily-puzzle-game
+cd <project-folder>
 ```
 
 Install dependencies
